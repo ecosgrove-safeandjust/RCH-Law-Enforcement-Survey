@@ -70,8 +70,8 @@ data <- data |>
                             q57 == "Man" ~ "Man",
                             TRUE ~ "Man"), #key in brother
          location = case_when(q55 == "Yes, I live in the same neighborhood." ~ "Neighborhood",
-                              q55 == "Yes, I live in the same city." ~ "City",
-                              q55 == "Yes, I live in the same metro area." ~ "Metro area",
+                              q55 == "Yes, I live in the same city." ~ "City or metro area",
+                              q55 == "Yes, I live in the same metro area." ~ "City or metro area",
                               TRUE ~ "Outside metro area"))
 
 race_check <- data |>
