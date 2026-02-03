@@ -1,5 +1,7 @@
 #### CODE FOR VALUE LABELS FROM CENTIMENT
 
+#### SAMPLE SIZES TOO SMALL FOR AGENCY
+
 rm(list = ls())
 
 library(haven)
@@ -27,7 +29,7 @@ questions <- questions[1:2]
 colnames(questions) <- c("variable", "question")
 write.csv(questions, "output/questions as a list.csv")
 
-print(unique(data$q59))
+#print(unique(data$q59))
 
 data <- data %>%
   mutate(
@@ -64,10 +66,13 @@ data <- data %>%
                             q57 == "Man" ~ "Man",
                             TRUE ~ "Man"))#key in brother
 
+unique(data$q55)
+
 race_check <- data |>
   select(q58_1, q58_2, q58_3, q58_4, q58_5, q58_6, q58_7, race_ethn)
 
-###ADDITIONAL XTABS - urbanicity, live where you work, income
+table(data$race_ethn)
+###ADDITIONAL XTABS - role, urbanicity, live where you work, income
 
 # Define main sample
 
@@ -116,12 +121,11 @@ auto <- function (data, v1) {
   gender <- crosstabs(data, {{v1}}, gender) %>%
     mutate(domain = "gender")
 
-
   agency <- crosstabs(data, {{v1}}, agency) %>%
     mutate(domain = "agency")
 
-  tenure <- crosstabs(data, {{v1}}, tenure) %>%
-    mutate(domain = "tenure")
+  proximity <- crosstabs(data, {{v1}}, q55) %>%
+    mutate(domain = "proximity")
 
   race <- crosstabs(data, {{v1}}, race_ethn) %>%
     mutate(domain = "race") 
@@ -129,7 +133,7 @@ auto <- function (data, v1) {
   colnames(age) <- c("answer", "subcategory", "n_cases", "total", "pct", "domain")
   colnames(gender) <- c("answer", "subcategory", "n_cases", "total", "pct", "domain")
   colnames(agency) <- c("answer", "subcategory", "n_cases", "total", "pct", "domain")
-  colnames(tenure) <- c("answer", "subcategory", "n_cases", "total", "pct", "domain")
+  colnames(proximity) <- c("answer", "subcategory", "n_cases", "total", "pct", "domain")
   colnames(race) <- c("answer", "subcategory", "n_cases", "total", "pct", "domain")
 
   total <- nrow(data)
@@ -145,7 +149,7 @@ auto <- function (data, v1) {
 
   colnames(total) <- c("answer",  "n_cases", "total", "pct", "subcategory", "domain")
 
-  df <- na.omit(rbind(total, race, gender, agency, tenure, age)) %>%
+  df <- na.omit(rbind(total, race, gender, agency, proximity, age)) %>%
     select(domain, subcategory, answer, pct) %>%
     mutate(pct = round(pct * 100)) %>%
     arrange(domain, subcategory)
@@ -157,7 +161,10 @@ auto <- function (data, v1) {
 }
 
 q52 <- auto(data, q52)
-
+q51 <- auto(data, q51)
+q50 <- auto(data, q50)
+q50 <- auto(data, q50)
+q17 <- auto(data, q17_r1)
 
 export <- function(data, v1) {
   
@@ -186,4 +193,7 @@ export <- function(data, v1) {
   
 }
 
-q52 <- export(data, q52)
+##Qs where proximity matters
+q51 <- export(data, q51)
+q27 <- export(data, q47)
+q48 <- export(data, q48)
