@@ -144,7 +144,7 @@ auto <- function (data, v1) {
 
   total <- nrow(data)
 
-  total <- data %>%
+  total <- data |> 
     group_by(as_factor({{v1}})) %>%
     summarise(n_cases = n()) %>%
     mutate(total = total,
