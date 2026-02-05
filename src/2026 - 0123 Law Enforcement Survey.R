@@ -1,7 +1,6 @@
 #### CODE FOR VALUE LABELS FROM CENTIMENT
 
-###NOTE: WHAT TO DO ABOUT THE RESPONDANT WHO KEYED IN "BROTHER" FOR Q57: WHAT IS YOUR GENDER?
-
+#### SAMPLE SIZES TOO SMALL FOR AGENCY
 
 rm(list = ls())
 
@@ -34,7 +33,7 @@ questions <- questions[1:2]
 colnames(questions) <- c("variable", "question")
 write.csv(questions, "output/questions as a list.csv")
 
-print(unique(data$q59))
+#print(unique(data$q59))
 
 data <- data |> 
   filter(!grepl("aide", q5_other_key_in)) |>    # remove probation aide from sample
@@ -78,10 +77,13 @@ data <- data |>
                               q55 == "Yes, I live in the same metro area." ~ "City or metro area",
                               TRUE ~ "Outside metro area"))
 
+unique(data$q55)
+
 race_check <- data |>
   select(q58_1, q58_2, q58_3, q58_4, q58_5, q58_6, q58_7, race_ethn)
 
-###ADDITIONAL XTABS - urbanicity, live where you work, income
+table(data$race_ethn)
+###ADDITIONAL XTABS - role, urbanicity, live where you work, income
 
 # Define main sample
 
@@ -137,8 +139,8 @@ auto <- function (data, v1) {
   agency <- crosstabs(data, {{v1}}, agency) %>%
     mutate(domain = "agency")
 
-  tenure <- crosstabs(data, {{v1}}, tenure) %>%
-    mutate(domain = "tenure")
+  proximity <- crosstabs(data, {{v1}}, q55) %>%
+    mutate(domain = "proximity")
 
   race <- crosstabs(data, {{v1}}, race_ethn) %>%
     mutate(domain = "race") 
